@@ -25490,8 +25490,19 @@ end;
                     setStatus("in stop zone")
                     task.wait(0.15)
                 end
+            elseif guiCache.stop or guiCache.roll then
+                setStatus("waiting on the game's button")
+                task.wait(0.2)
+            elseif indexed then
+                -- no finish part found: natural run straight ahead until STOP NOW shows up
+                local hrp = parts()
+                local look = Vector3.new(hrp.CFrame.LookVector.X, 0, hrp.CFrame.LookVector.Z)
+                if look.Magnitude > 0.1 then
+                    setStatus("running ahead · no finish part found")
+                    moveTo(hrp.Position + look.Unit * 80, 0)
+                end
             else
-                setStatus(indexed and "no finish found · Scan / set keywords" or "indexing the map")
+                setStatus("indexing the map")
                 task.wait(0.3)
             end
         end
